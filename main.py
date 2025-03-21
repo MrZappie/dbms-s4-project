@@ -5,18 +5,26 @@ from home import HomePage
 
 
 class MainWindow(QMainWindow):
+
     def __init__(self):
         super().__init__()
-
+        
         self.account = None
         self.account_books = []
+        self.accounts = []
+        self.real_list = {}
+        self.booked = {}
 
         self.setWindowTitle("Test")
         self.setStyleSheet("background-color:rgb(255,255,255)")
         self.setGeometry(500, 100, 600, 600)
+
         self.page_stack = QStackedWidget(self)
+
         self.setWindowState(Qt.WindowState.WindowMaximized)
+
         self.page_stack.addWidget(HomePage())
+
         self.setCentralWidget(self.page_stack)
 
 
@@ -37,12 +45,10 @@ class MainWindow(QMainWindow):
 
     def book(self,movie,theatre,time,seats):
         self.account_books.append(f"{movie.title}#{theatre.name}#{time}#{seats}")
+        self.booked[self.account] = self.account_books
 
 if __name__ == '__main__':
-
     app = QApplication([])
-
-    myApp = MainWindow()
-    myApp.show()
-
+    win = MainWindow()
+    win.show()
     app.exec()

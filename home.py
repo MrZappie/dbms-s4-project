@@ -7,6 +7,7 @@ from list import ListPage
 class HomePage(QWidget):
     def __init__(self):
         super().__init__()
+
         uic.loadUi('ui/home.ui', self)
 
         self.search_button.setIcon(QIcon.fromTheme('system-search'))

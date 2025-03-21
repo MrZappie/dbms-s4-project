@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QWidget, QGridLayout
+from PyQt6.QtWidgets import QWidget, QGridLayout, QMessageBox
 from PyQt6 import uic
 
 from myWidget.seat_tile import SeatTile
@@ -29,14 +29,21 @@ class SeatPage(QWidget):
 
     def on_book_click(self):
         if self.window().account is None:
-            self.on_back_click()
+            msg = QMessageBox()
+            msg.setWindowTitle("No User")
+            msg.setText("Must Be Logged In")
+            msg.setIcon(QMessageBox.Icon.Information)
+            msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+            msg.exec()
         else:
+            #backend
             seats = []
             for i in self.seat_buttons:
                 if i.isChecked():
                     seats.append(i.text())
 
             self.window().book(self.movie,self.theatre,self.time,seats)
+
             self.on_back_click()
 
 

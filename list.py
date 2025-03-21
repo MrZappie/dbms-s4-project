@@ -16,6 +16,7 @@ class ListPage(QWidget):
     def __init__(self,movie_title):
         super().__init__()
         uic.loadUi('ui/list.ui', self)
+
         self.x ,self.y = 0,0
 
         self.home_button.setIcon(QIcon.fromTheme("go-home"))
@@ -36,6 +37,7 @@ class ListPage(QWidget):
         self.widget.setLayout(self.grid)
         self.scroll.setWidget(self.widget)
 
+        #backend
         for i in range(1,51):
             if movie_title in str(i):
                 self.add_movie(MovieTile(str(i)))
@@ -57,6 +59,9 @@ class ListPage(QWidget):
         movie_title = self.input.text()
         self.display_title.setText(display_title_text+movie_title)
         self.clear_grid()
+
+        #backend
+
         for i in range(1,51):
             if movie_title in str(i):
                 self.add_movie(MovieTile(str(i)))
@@ -79,6 +84,7 @@ class ListPage(QWidget):
 
 
     def showEvent(self, event):
+        print("Current Account: ",self.window().account, " Total accounts: ",self.window().real_list.keys())
         if self.window().account is not None:
             self.account_button.setText(self.window().account)
         else:

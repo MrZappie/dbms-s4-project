@@ -3,7 +3,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGridLayout
 from PyQt6 import uic
 
 from myWidget.book_tile import BookedTile
-from myWidget.seat_tile import SeatTile
+
 
 
 class AccountPage(QWidget):
@@ -12,6 +12,7 @@ class AccountPage(QWidget):
         super().__init__()
         self.x = 0
         uic.loadUi("ui/account.ui",self)
+
 
         self.back_button.clicked.connect(self.on_back_click)
         self.logout_button.clicked.connect(self.on_logout_click)
@@ -23,7 +24,8 @@ class AccountPage(QWidget):
 
     def showEvent(self, event):
         super().showEvent(event)
-
+        #backend
+        self.username.setText("Username: "+self.window().account)
         if self.window():
             for i in self.window().account_books:
                 movie, theatre, title, seat = i.split("#")
@@ -32,6 +34,7 @@ class AccountPage(QWidget):
                 self.x+=1
         else:
             print("MainWindow not found.")
+
 
     def clear_grid(self):
         while self.sc_layout.count():
@@ -43,6 +46,7 @@ class AccountPage(QWidget):
 
     def on_logout_click(self):
         self.window().account = None
+        self.window().account_books = []
         self.on_back_click()
 
     def on_back_click(self):

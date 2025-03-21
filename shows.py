@@ -20,6 +20,7 @@ class ShowsPage(QWidget):
 
         self.back_button.clicked.connect(self.on_back_click)
 
+        #backend
         for i in range(3):
             self.add_theatre(TheatreTile(str(i),['1:00 AM','10:30 AM','3:00 PM'],movie))
 
