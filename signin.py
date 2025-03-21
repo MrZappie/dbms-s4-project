@@ -1,17 +1,16 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
-
-
+import connect
 
 class SignInPage(QWidget):
     def __init__(self):
         super().__init__()
-        uic.loadUi("ui/signin.ui",self)
+        uic.loadUi("ui/signin.ui", self)
+
 
         self.submit_button.clicked.connect(self.on_submit_click)
         self.back_button.clicked.connect(self.on_back_click)
         self.login_button.clicked.connect(self.on_log_in_click)
-
 
     def on_submit_click(self):
         username = self.username.text()
@@ -19,36 +18,22 @@ class SignInPage(QWidget):
         c_password = self.confirm_password.text()
 
         if username in self.window().real_list.keys():
-            msg = QMessageBox()
-            msg.setWindowTitle("User Already Present")
-            msg.setText("Need another name")
-            msg.setIcon(QMessageBox.Icon.Information)
-            msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
-            msg.exec()
+            QMessageBox.information(self, "User Already Present", "Need another name")
             return
 
         if not username or not password or not c_password:
-            msg = QMessageBox()
-            msg.setWindowTitle("Unfilled Fields")
-            msg.setText("All Fields must be filled")
-            msg.setIcon(QMessageBox.Icon.Information)
-            msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
-            msg.exec()
+            QMessageBox.information(self, "Unfilled Fields", "All Fields must be filled")
             return
 
         if password != c_password:
-            msg = QMessageBox()
-            msg.setWindowTitle("Unmatched Password")
-            msg.setText("Password And Confirm Password doesn't Match ")
-            msg.setIcon(QMessageBox.Icon.Information)
-            msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
-            msg.exec()
+            QMessageBox.information(self, "Unmatched Password", "Password And Confirm Password doesn't Match")
             return
-
-
 
         self.window().account = username
         self.window().real_list[username] = password
+
+        connect.execute(f"insert into user values ('{username}','{c_password}')")
+
         self.on_back_click()
 
     def on_log_in_click(self):
