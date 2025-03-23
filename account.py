@@ -26,10 +26,26 @@ class AccountPage(QWidget):
         super().showEvent(event)
         #backend
         self.username.setText("Username: "+self.window().account)
+
+        seats_d ={}
+
         if self.window():
-            for i in self.window().account_books:
-                movie, theatre, title, seat = i.split("#")
-                book_tile = BookedTile(movie,theatre,title,seat)
+            try:
+                self.window().cursor.execute(f"select * from seats where account = '{self.window().account}'")
+                result = self.window().cursor.fetchall()
+                for i in result:
+                    seat,movie,theatre,time = i[1:5]
+                    if movie+'#'+theatre+'#'+time in seats_d.keys():
+                        seats_d[movie+'#'+theatre+'#'+time].append(seat)
+                    else:
+                        seats_d[movie+'#'+theatre+'#'+time] = [seat,]
+            except Exception as e:
+                print(f"Error: {e}")
+
+            for i in seats_d:
+                movie, theatre, title = i.split("#")
+                seat = seats_d[i]
+                book_tile = BookedTile(movie,theatre,title,str(seat))
                 self.sc_layout.addWidget(book_tile,self.x,0,alignment=Qt.AlignmentFlag.AlignLeft)
                 self.x+=1
         else:

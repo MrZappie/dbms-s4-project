@@ -1,3 +1,4 @@
+import mysql.connector
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QStackedWidget
@@ -14,6 +15,15 @@ class MainWindow(QMainWindow):
         self.accounts = []
         self.real_list = {}
         self.booked = {}
+
+        self.con = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="sidhu123",
+            database="dbmspro",
+            use_pure=True
+        )
+        self.cursor = self.con.cursor()
 
         self.setWindowTitle("Test")
         self.setStyleSheet("background-color:rgb(255,255,255)")

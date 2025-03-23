@@ -10,5 +10,6 @@ def execute(query):
     )
 
     cursor = con.cursor()
-    cursor.execute(query)
+    result = cursor.execute(query)
     con.commit()
+    return result

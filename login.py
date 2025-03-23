@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QWidget, QMessageBox
 from PyQt6 import uic
 
+import connect
 from signin import SignInPage
 
 
@@ -14,36 +15,44 @@ class LoginPage(QWidget):
         self.back_button.clicked.connect(self.on_back_click)
         self.sign_in_button.clicked.connect(self.on_sign_in_click)
 
+
     def on_submit_click(self):
         username = self.username.text()
         password = self.password.text()
 
-        if username not in self.window().real_list.keys():
-            msg = QMessageBox()
-            msg.setWindowTitle("User Not Present")
-            msg.setText("Incorrect Username")
-            msg.setIcon(QMessageBox.Icon.Information)
-            msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
-            msg.exec()
-            return
 
-        if self.window().real_list[username] != password:
-            msg = QMessageBox()
-            msg.setWindowTitle("Incorrect Password or Username")
-            msg.setText("Please Recheck")
-            msg.setIcon(QMessageBox.Icon.Information)
-            msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
-            msg.exec()
-            return
+        try:
+            self.window().cursor.execute(f"select * from user where username = '{username}'")
+            result = self.window().cursor.fetchone()
 
+            if result is None:
+                self.show_message_box("User Not Present", "Incorrect Username")
+                return
 
+            db_username, db_password = result[0], result[1]
 
-        self.window().account = username
-        self.window().account_books = self.window().booked[username]
-        self.on_back_click()
+            if db_password != password:
+                self.show_message_box("Incorrect Password or Username", "Please Recheck")
+                return
+
+            # Login successful
+            self.window().account = username
+            self.on_back_click()
+
+        except Exception as e:
+            print(f"Database error: {e}")
+            self.show_message_box("Error", "An error occurred while accessing the database.")
 
     def on_sign_in_click(self):
         self.window().replace_page(SignInPage())
 
     def on_back_click(self):
         self.window().pop_page()
+
+    def show_message_box(self, title, message):
+        msg = QMessageBox()
+        msg.setWindowTitle(title)
+        msg.setText(message)
+        msg.setIcon(QMessageBox.Icon.Information)
+        msg.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
+        msg.exec()

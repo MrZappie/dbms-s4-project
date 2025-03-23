@@ -1,4 +1,7 @@
+import random
+
 from PyQt6.QtCore import QSize, QPropertyAnimation, QEasingCurve
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import QPushButton
 
 
@@ -12,13 +15,13 @@ class MovieTile(QPushButton):
 
         self.setFixedSize(self.original_size)  # Set initial size
 
-        self.setStyleSheet("""
-             QPushButton {
+        self.setStyleSheet(f"""
+             QPushButton {{
                 border-radius: 10px;
-                background-color: rgb(150,150,150);
+                background-color: {self.generate_light_color()};
                 color: black;
                 padding: 5px;
-             }
+             }}
         """)
         self.setText(self.title)
 
@@ -40,3 +43,9 @@ class MovieTile(QPushButton):
         self.anim.setEndValue(self.original_size)
         self.anim.start()
         super().leaveEvent(event)
+
+    def generate_light_color(self):
+        red = random.randint(150, 255)
+        green = random.randint(150, 255)
+        blue = random.randint(150, 255)
+        return QColor(red, green, blue).name()

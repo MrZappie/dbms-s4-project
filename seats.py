@@ -21,10 +21,26 @@ class SeatPage(QWidget):
         self.grid = QGridLayout()
         self.scrollAreaWidget.setLayout(self.grid)
 
-        for i in range(1,61):
-            seat = SeatTile(str(i))
-            self.seat_buttons.append(seat)
-            self.add_button(seat)
+
+    def showEvent(self, a0):
+        try:
+            self.window().cursor.execute(f"select seat_name from seats where theatre_name = '{self.theatre.name}'")
+            result = self.window().cursor.fetchall()
+            print(result)
+            for i in range(0, 60):
+                seat_name = chr((i//10)+65) + str((i%10)+1)
+
+                booked = False
+                for i in result:
+                    if seat_name in i:
+                        booked = True
+
+                seat = SeatTile(str(seat_name),booked)
+                self.seat_buttons.append(seat)
+                self.add_button(seat)
+        except Exception as e:
+            print(f"Error: {e}")
+        super().showEvent(a0)
 
 
     def on_book_click(self):
@@ -41,6 +57,12 @@ class SeatPage(QWidget):
             for i in self.seat_buttons:
                 if i.isChecked():
                     seats.append(i.text())
+                    try:
+                        self.window().cursor.execute(f"insert into seats(seat_name,movie_name,theatre_name,time,account) values('{i.text()}','{self.movie.title}','{self.theatre.name}','{self.time}','{self.window().account}')")
+                        self.window().con.commit()
+
+                    except Exception as e:
+                        print(f"{e}")
 
             self.window().book(self.movie,self.theatre,self.time,seats)
 

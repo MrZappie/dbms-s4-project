@@ -32,7 +32,8 @@ class SignInPage(QWidget):
         self.window().account = username
         self.window().real_list[username] = password
 
-        connect.execute(f"insert into user values ('{username}','{c_password}')")
+        self.window().cursor.execute(f"insert into user(username, password) values ('{username}','{c_password}')")
+        self.window().con.commit()
 
         self.on_back_click()
 

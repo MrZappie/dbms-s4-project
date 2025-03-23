@@ -34,7 +34,7 @@ class TheatreTile(QWidget):
         self.shows_button = []
         for i in range(len(shows)):
             button = QPushButton(shows[i])
-            button.setFixedSize(100,50)
+            button.setFixedSize(200,50)
             button.setStyleSheet("""
                 QPushButton{
                     background-color: white;

@@ -9,7 +9,7 @@ from login import LoginPage
 from myWidget.movie_tile import MovieTile
 from shows import ShowsPage
 
-display_title_text = "Displaying Movies with Title: "
+display_title_text = "Displaying Movies with Title Containing Words: "
 
 class ListPage(QWidget):
 
@@ -20,6 +20,7 @@ class ListPage(QWidget):
         self.x ,self.y = 0,0
 
         self.home_button.setIcon(QIcon.fromTheme("go-home"))
+        self.input.setText(movie_title)
         self.display_title.setText(display_title_text+movie_title)
         self.search_button.setIcon(QIcon.fromTheme('system-search'))
 
@@ -37,10 +38,6 @@ class ListPage(QWidget):
         self.widget.setLayout(self.grid)
         self.scroll.setWidget(self.widget)
 
-        #backend
-        for i in range(1,51):
-            if movie_title in str(i):
-                self.add_movie(MovieTile(str(i)))
 
         self.layout().addWidget(self.scroll)
 
@@ -61,10 +58,17 @@ class ListPage(QWidget):
         self.clear_grid()
 
         #backend
+        if movie_title is None:
+            movie_title = ""
+        try:
+            self.window().cursor.execute(f"select title from movies where title like '%{movie_title}%'")
+            result = self.window().cursor.fetchall()
+            for i in result:
+                self.add_movie(MovieTile(i[0]))
 
-        for i in range(1,51):
-            if movie_title in str(i):
-                self.add_movie(MovieTile(str(i)))
+        except Exception as e:
+            print(f"{e}")
+
 
 
     def on_movie_click(self, movie):
@@ -84,7 +88,18 @@ class ListPage(QWidget):
 
 
     def showEvent(self, event):
-        print("Current Account: ",self.window().account, " Total accounts: ",self.window().real_list.keys())
+        movie_title = self.input.text()
+        if movie_title is None:
+            movie_title = ""
+        try:
+            self.window().cursor.execute(f"select title from movies where title like '%{movie_title}%'")
+            result = self.window().cursor.fetchall()
+            for i in result:
+                self.add_movie(MovieTile(i[0]))
+        except Exception as e:
+            print(f"{e}")
+
+
         if self.window().account is not None:
             self.account_button.setText(self.window().account)
         else:
