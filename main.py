@@ -19,8 +19,8 @@ class MainWindow(QMainWindow):
         self.con = mysql.connector.connect(
             host="localhost",
             user="root",
-            password="sidhu123",
-            database="",
+            password="",
+            database="dbmspro",
             use_pure=True
         )
         self.cursor = self.con.cursor()
