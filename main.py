@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
             host="localhost",
             user="root",
             password="sidhu123",
-            database="dbmspro",
+            database="",
             use_pure=True
         )
         self.cursor = self.con.cursor()
